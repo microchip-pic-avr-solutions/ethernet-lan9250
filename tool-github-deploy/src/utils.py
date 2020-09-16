@@ -288,19 +288,41 @@ class utils:
         return None
 
     def errorMsgPrintForhttpStatusCode(self, args, string):
-
+        status = False
         my_path = os.path.abspath(os.path.dirname(__file__))
         httpStatusCodePath = os.path.join(my_path, "httpStatusCode.json")
 
-        file = open(httpStatusCodePath, "r+")
-        jsonDataList = json.loads(file.read())
+        jsonDataList = self.readJsonFile(httpStatusCodePath)
 
         for jsonData in jsonDataList:
             if(string.find(jsonData["code"]) > -1):
+                status = True
                 print("[!] HTTP response status codes: " + jsonData["code"] + " -> " +
                       jsonData["phrase"] + " (" + jsonData["description"] + ")")
                 if(args.debug_mode):
                     print("[!] Original http response message: " + string)
                     print("[!] [Http response code about info]: " +
                           jsonData["spec_href"])
-        pass
+        return status
+
+    def readJsonFile(self, jsonFilePath):
+        file = open(jsonFilePath, "r+")
+        jsonData = json.loads(file.read())
+        file.close()
+        return jsonData
+    
+    def sortSEMVER(self, semverList):
+        list1 = [] 
+        for x in semverList:
+            x = x.replace("'", "").replace("\"", "")
+            list1.append(x.split("."))
+        list2 = [] 
+        for y in list1:
+            y = list(map(int, y))
+            list2.append(y)
+        list3 = sorted(list2)
+        FinalList = [] 
+        for a in list3:
+            a = '.'.join(str(z) for z in a)
+            FinalList.append(a)
+        return FinalList

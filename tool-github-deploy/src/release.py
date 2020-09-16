@@ -1,4 +1,5 @@
 from src.utils import utils
+from src.deployment_validator import deploymentValidator
 
 class release:
     """
@@ -182,6 +183,16 @@ class release:
 
         print("[*] Starting release process at " + utils().currentDataAndTimeGet())
 
+        deploymentValidator().checkRepoIsBelongsToOrganization(args, githubAccess)
+
+        if(not args.disbale_release_error_check):
+            try:
+                args.github_release_tag = args.tag_title
+                deploymentValidator().isPresentGitHubReleaseTag(args, githubAccess)
+                pass
+            except Exception as identifier:
+                raise Exception(identifier)
+
         if(args.release_note_path):
             print("[*] Changelog file path: \"" + args.release_note_path +"\"")
 
@@ -223,19 +234,21 @@ class release:
 
             utils().githubExceptionWarningMessage(str(e))
             utils().githubExceptionErrorMessage(str(e))  
-
-        if(findRepoStatus ==  False):
-            print("[!] Unable to find github repository name: " + args.repo_name)
+            status = utils().errorMsgPrintForhttpStatusCode(args, str(e))
+            if(status):
+                raise Exception("")
             
+
+        if(not findRepoStatus):            
             if(repoList):
                 print("[*] We found your repositories in github: " + str(repoList))
-            return False
 
-        if(findRepoStatus and findTagStatus == False and (args.delete_release or args.edit_release)):
-            print("[!] Unable to find github repository tag title: " + args.tag_title)
-            
+            raise Exception("[!] Unable to find github repository name: " + args.repo_name)
+
+        if(findRepoStatus and not findTagStatus and (args.delete_release or args.edit_release)):
             if(tagVersions):
                 print("[*] We found your tag titles in github repository: " + str(tagVersions))
-            return False
+
+            raise Exception("[!] Unable to find github repository tag title: " + args.tag_title)
 
         return True

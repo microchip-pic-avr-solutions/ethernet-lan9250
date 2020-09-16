@@ -1,0 +1,143 @@
+{
+    "description": "GitHub Deployment .meta-data json schema",
+    "type": "object",
+    "properties": {
+      "metaDataVersion": {
+        "type": "string"
+      },
+      "category": {
+        "type": "string"
+      },
+      "content": {
+        "type": "object",
+        "properties": {
+          "metaDataVersion": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string"
+          },
+          "displayName": {
+            "type": "string"
+          },
+          "projectName": {
+            "type": "string"
+          },
+          "shortDescription": {
+            "type": "string"
+          },
+          "ide": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "semverRange": {
+                "type": "string"
+              }
+            }
+          },
+          "compiler": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "semverRange": {
+                "type": "string"
+              }
+            }
+          },
+          "dfp": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "semverRange": {
+                "type": "string"
+              }
+            }
+          },
+          "configurator": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "semverRange": {
+                "type": "string"
+              }
+            }
+          },
+          "device": {
+            "type": "object",
+            "properties": {
+              "metaDataVersion": {
+                "type": "string"
+              },
+              "category": {
+                "type": "string"
+              },
+              "content": {
+                "type": "object",
+                "properties": {
+                  "metaDataVersion": {
+                    "type": "string"
+                  },
+                  "category": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "versionRange": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "peripherals": {
+            "type": "array"
+          },
+          "keywords": {
+            "type": "array"
+          }
+        }
+      },
+      "additionalData": {
+        "type": "object",
+        "properties": {
+          "longDescription": {
+            "type": "object",
+            "properties": {
+              "metaDataVersion": {
+                "type": "string"
+              },
+              "category": {
+                "type": "string"
+              },
+              "content": {
+                "type": "object",
+                "properties": {
+                  "metaDataVersion": {
+                    "type": "string"
+                  },
+                  "fileName": {
+                    "type": "string"
+                  },
+                  "mimeType": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }

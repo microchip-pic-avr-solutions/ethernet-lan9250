@@ -5,6 +5,7 @@ from src.release import release
 from src.repo import repo
 from src.deploy import deploy
 from src.bitbucket import bitbucket
+from src.deployment_validator import deploymentValidator
 
 def main():
     try:
@@ -39,7 +40,13 @@ def main():
                 bitbucket().performBitbucketOperations(args)
                 print("[*] tool-github-deploy Bitbucket Tag operation done")
 
+            if(args.validate_deploy_operation):
+                githubAccess = Github(args.github_personal_access_token)
+                deploymentValidator().performDeploymentValidatorOperations(args, githubAccess)  
+
             sys.exit(0)      
+        elif(args.validate_deploy_operation):
+            deploymentValidator().performDeploymentValidatorOperations(args, None)
         else:
             print("[!] Invalid github_personal_access_token key")
     except Exception as e:

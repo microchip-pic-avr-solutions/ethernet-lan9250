@@ -193,6 +193,9 @@ class deploy:
                 print("[Debug] There was an error while pushing the "+ branch +" branch to Github. Please refer the logs.")
 
             utils().githubExceptionErrorMessage(error)
+            status = utils().errorMsgPrintForhttpStatusCode(args, str(error))
+            if(status):
+                raise Exception("")
                 
 
     def publishAllPublicReleaseTags(self, args):
@@ -383,8 +386,9 @@ class deploy:
                 if args.debug_mode: print("[Debug] publishTags->publishRegexMatchedTags : " + args.deploy_bitbucket_tag)
                 self.publishRegexMatchedTags(args)
         else:
-            if args.debug_mode: print("[Debug] publishTags->publishAllPublicReleaseTags : " + str(args.deploy_bitbucket_tag))
-            self.publishAllPublicReleaseTags(args)
+            if(not args.deploy_ignore_default_all_tags_push):
+                if args.debug_mode: print("[Debug] publishTags->publishAllPublicReleaseTags : " + str(args.deploy_bitbucket_tag))
+                self.publishAllPublicReleaseTags(args)
 
     def getRepoPrivateAccessStatus(self, args, githubAccessHook):
         """

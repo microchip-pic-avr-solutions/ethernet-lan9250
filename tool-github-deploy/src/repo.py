@@ -54,6 +54,9 @@ class repo:
 
             utils().githubExceptionWarningMessage(str(e))
             utils().githubExceptionErrorMessage(str(e))
+            status = utils().errorMsgPrintForhttpStatusCode(args, str(e))
+            if(status):
+                raise Exception("")
 
     def updateRepo(self, args, githubAccess):
         """
@@ -97,6 +100,9 @@ class repo:
 
             utils().githubExceptionWarningMessage(str(e))
             utils().githubExceptionErrorMessage(str(e))
+            status = utils().errorMsgPrintForhttpStatusCode(args, str(e))
+            if(status):
+                raise Exception("")
 
     def updateDefaultBranch(self, args, repo):
         """
@@ -116,6 +122,9 @@ class repo:
         except Exception as e:
             utils().githubExceptionWarningMessage(str(e))
             utils().githubExceptionErrorMessage(str(e))
+            status = utils().errorMsgPrintForhttpStatusCode(args, str(e))
+            if(status):
+                raise Exception("")
 
     def validateRepoTopics(self, oldList):
         """
@@ -190,6 +199,9 @@ class repo:
                 except Exception as e:
                     utils().githubExceptionWarningMessage(str(e))
                     utils().githubExceptionErrorMessage(str(e))
+                    status = utils().errorMsgPrintForhttpStatusCode(args, str(e))
+                    if(status):
+                        raise Exception("")
 
         if(repoList):
             print("[*] Updated github repository topics into : " + str(repoList))

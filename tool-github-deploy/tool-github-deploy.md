@@ -12,6 +12,10 @@ This is a GitHub deployment tool with the following features,
 7. Create a markdown based release description.
 8. Edit a release description
 9. Delete a release description
+10. Create a bitbucket repository tag
+11. Validate Meta-data json schema
+12. validate GitHub release tag version
+13. validate GitHub tag version
 
 ## Index
 - Setting up the Prerequisites 
@@ -23,6 +27,8 @@ Please follow the below steps to install the pre-requisite tools.
 * [![Python](https://img.shields.io/badge/Python-v3.7.3-blue)](https://www.python.org/downloads/)
 * [![PyGitHub](https://img.shields.io/badge/PyGitHub-v3-blue)](https://github.com/PyGithub/PyGithub)
 * [![atlassian-python-api](https://img.shields.io/badge/atlassian_python_api-v1.16.0-blue)](https://atlassian-python-api.readthedocs.io/)
+* [![jsonschema](https://img.shields.io/badge/jsonschema-v3.2.0-blue)](https://pypi.org/project/jsonschema/)
+* [![packaging ](https://img.shields.io/badge/packaging-v20.4.0-blue)](https://pypi.org/project/packaging/)
 
 ### Steps to install prerequisite tools 
 1. Create a folder with some convenient name for the project in your local machine, inside this created folder clone the [prerequisite](https://bitbucket.microchip.com/scm/citd/tool-environment-setup.git) repository , cloning can be done by running the following command in command prompt inside the created folder. How to clone git repository [click here](https://www.toolsqa.com/git/git-clone/)
@@ -96,6 +102,32 @@ git clone https://bitbucket.microchip.com/scm/citd/tool-environment-setup.git
             - $ from atlassian import Confluence
 
         - If you get "ModuleNotFoundError: No module named 'atlassian'" error, Please make sure 'atlassian-python-api' library installation success. Otherwise, setup is successful.
+3. Run the following command in the Command prompt or terminal to install `jsonschema` library
+
+    ```
+    $ pip install jsonschema
+    ```
+
+    Validation of all the installed pre-requisite python library can be done by following the below steps.
+
+        - Run the following command in the Command prompt or terminal.
+            - $ python
+            - $ import jsonschema
+
+        - If you get "ModuleNotFoundError: No module named 'jsonschema'" error, Please make sure 'jsonschema' library installation success. Otherwise, setup is successful.
+4. Run the following command in the Command prompt or terminal to install `packaging ` library
+
+    ```
+    $ pip install packaging
+    ```
+
+    Validation of all the installed pre-requisite python library can be done by following the below steps.
+
+        - Run the following command in the Command prompt or terminal.
+            - $ python
+            - $ import packaging
+
+        - If you get "ModuleNotFoundError: No module named 'packaging'" error, Please make sure 'packaging' library installation success. Otherwise, setup is successful.
 
 ## Description for GitHub Deployment Tool
 The tool is capable of automatically create Github repository, update Github repository, deploy bitbucket source to GitHub repository, and process a GitHub release object with Markdown release notes.
@@ -155,6 +187,7 @@ usage: tool-github-deploy.py [-h]
                                     [-rlua UPLOAD_ASSETS]
                                     [-rle EDIT_RELEASE] 
                                     [-rld DELETE_RELEASE]
+                                    [-rldec DISABLE_RELEASE_ERROR_CHECK]
 
                                 [-deploy DEPLOYMENT]
                                     [-dburl DEPLOY_BITBUCKET_URL]
@@ -164,6 +197,9 @@ usage: tool-github-deploy.py [-h]
                                     [-dtag DEPLOY_BITBUCKET_TAG]
                                     [-def DEPLOY_EXCLUDES_FILES]
                                     [-dec DEPLOY_EXCLUDES_FILES_COMMIT]
+                                    [-dmfd DEPLOY_MANDATORY_FILES_CHECK_DISABLE]
+                                    [-digt DEPLOY_IGNORE_DEFAULT_ALL_TAGS_PUSH]
+
                                 
                                 [-bto BITBUCKET_TAG_OPERATION]
                                     [-bid BITBUCKET_USER_ID]
@@ -172,6 +208,12 @@ usage: tool-github-deploy.py [-h]
                                     [-btv BITBUCKET_TAG_NAME]
                                     [-bch BITBUCKET_COMMIT_HASH]
                                     [-btd BITBUCKET_TAG_DESCRIPTION]
+                                
+                                [-vdo VALIDATE_DEPLOY_OPERATION]
+                                    [-vmf META_DATA_FILE_PATH]
+                                    [-vjsf JSON_SCHEMA_FILE_PATH]
+                                    [-vgrt GITHUB_RELEASE_TAG] 
+                                    [-vgt GITHUB_TAG]
 
 tool-GitHub-deploy arguments:
 
@@ -187,9 +229,9 @@ where options include:
         -rpo, --repo_operation        (repo: argument type Boolean, This argument is used to set the repository operation (default state is False))
         -rpd, --repo_desc             (repo: argument type String, This argument is used to provide the GitHub repository description)
         -rpt, --repo_topics           (repo: argument type String, This argument is used to provide the GitHub repository topics (comma separate, e.g. -rpt=["PIC24",  "dsPIC33"]))
-        -rphi, --repo_has_issues      (repo: argument type Boolean, This argument is used to enable or disable the GitHub repositories "issues" option)
-        -rphp, --repo_has_projects    (repo: argument type Boolean, This argument is used to enable or disable the GitHub repositories "Projects" option)
-        -rpp, --repo_private          (repo: argument type Boolean, This argument is used to make the repository Private or Public)
+        -rphi, --repo_has_issues      (repo: argument type Boolean, This argument is used to enable or disable the GitHub repositories "issues" option (default state is True))
+        -rphp, --repo_has_projects    (repo: argument type Boolean, This argument is used to enable or disable the GitHub repositories "Projects" option (default state is True))
+        -rpp, --repo_private          (repo: argument type Boolean, This argument is used to make the repository Private or Public (default state is True))
         -rpdb, --repo_default_branch  (repo: argument type String, This argument is used to set the GitHub repository default branch)
         -rpu, --repo_update           (repo: argument type Boolean, This argument is used to set the GitHub repository updation (default state is False))
         -rporg, --repo_organization   (repo: argument type String, This argument is used to select the organization where the repo needs to be created. Users can provide the entire URL or just the organization name as the value of this argument.)
@@ -201,7 +243,8 @@ where options include:
         -rltt, --tag_title                (release: argument type String, This argument is used to provide the release tag title)
         -rlua, --upload_assets            (release: argument type String, This argument is used to provide the upload artifact assets files (comma separate, e.g. -rlua=archive.zip, support.doc))
         -rle, --edit_release              (release: argument type Boolean, This argument is used to edit a release in Github Repository (default state is False))
-        -rld, --delete_release             (release: argument type Boolean, This argument is used to delete a release in Github Repository (default state is False))
+        -rld, --delete_release            (release: argument type Boolean, This argument is used to delete a release in Github Repository (default state is False))
+        -rldec, --disbale_release_error_check (release: argument type Boolean, This argument is used to disable the release error check condition (default state is False))
   
     Deployment operation arguments:
         -deploy, --deployment                 (deploy:argument type Boolean, This argument is used to set the deployment operation (default state is False))
@@ -213,15 +256,23 @@ where options include:
         -def, --deploy_excludes_files         (deploy: argument type String [Regex supported], This argument is used to exclude specified files from deployment. (comma separate, e.g. -def="build, dist, config/*.fmpp"))
         -dec, --deploy_excludes_files_commit  (deploy: argument type String, This argument is used to provide the GitHub deploy excludes files commit)
         -dmfd, deploy_mandatory_files_check_disable (deploy: argument type Boolean, This argument is used to disable the mandatory files check required for deployment (default state is False))
+        -digt, --deploy_ignore_default_all_tags_push (deploy: argument type Boolean, This argument is used to disable the when there is no tag argument and default push all tags to GitHub (default state is False)
     
     Bitbucket tag creation arguments:
-        -bto, --bitbucket_tag_operation             (deploy:argument type Boolean, This argument is used to set the bitbucket tag operation (default state is False)
-        -bid, --bitbucket_user_id                   (Common: argument type String, This argument is used to provide the bitbucket user id)
-        -bpat, --bitbucket_personal_access_token    (Common: argument type String, This argument is used to provide the bitbucket personal access token)
-        -bpn, --bitbucket_project_name              (Common: argument type String, This argument is used to provide the bitbucket project name)
-        -btv, --bitbucket_tag_name                  (Common: argument type String, This argument is used to provide the bitbucket tag name)
-        -bch, --bitbucket_commit_hash               (Common: argument type String, This argument is used to provide the bitbucket commit hash)
-        -btd, --bitbucket_tag_description           (Common: argument type String, This argument is used to provide the bitbucket tag description)
+        -bto, --bitbucket_tag_operation             (bitbucket: argument type Boolean, This argument is used to set the bitbucket tag operation (default state is False)
+        -bid, --bitbucket_user_id                   (bitbucket: argument type String, This argument is used to provide the bitbucket user id)
+        -bpat, --bitbucket_personal_access_token    (bitbucket: argument type String, This argument is used to provide the bitbucket personal access token)
+        -bpn, --bitbucket_project_name              (bitbucket: argument type String, This argument is used to provide the bitbucket project name)
+        -btv, --bitbucket_tag_name                  (bitbucket: argument type String, This argument is used to provide the bitbucket tag name)
+        -bch, --bitbucket_commit_hash               (bitbucket: argument type String, This argument is used to provide the bitbucket commit hash)
+        -btd, --bitbucket_tag_description           (bitbucket: argument type String, This argument is used to provide the bitbucket tag description)
+
+    Validate GitHub deployment operation:
+        -vmf, --meta_data_file_path                 (validate: argument type String, This argument is used to provide the meta data file path)
+        -vjsf, --json_schema_file_path              (validate: argument type String, This argument is used to provide the json schema file path)
+        -vgrt, --github_release_tag                 (validate: argument type String, This argument is used to provide the GitHub release tag version)
+        -vgt, --github_tag                          (validate: argument type String, This argument is used to provide the GitHub tag version)
+
 ```
 
 ## Demonstrate how to run Github Deployment Tool on the local machine
@@ -241,11 +292,11 @@ Script Input Arguments:
         $5  -rpt    "This argument is used to provide the GitHub repository topics, Argument Type: String (comma separate, e.g. PIC24,  dsPIC33)"
         $6  -rphi   "This argument is sets the GitHub repository has issues option, Argument type Boolean (default state is True)"
         $7  -rphp   "This argument is sets the GitHub repository has projects option, Argument type Boolean (default state is True)"
-        $8  -rpp    "This argument is sets the GitHub repository private, Argument type Boolean (default state is False)"
+        $8  -rpp    "This argument is sets the GitHub repository private, Argument type Boolean (default state is True)"
         $9  -rpdb   "This argument is used to provide the GitHub repository default branch, Argument Type: String"
         $10 -rpu,   "This argument is sets the GitHub repository updation, Argument type Boolean (default state is False)" 
         $11 -rporg  "This argument is used to select the organization where the repo needs to be created. Users can provide the entire URL or just the organization name as the value of this argument., Argument Type: String" 
-        $12-dm      "This argument is sets the Debug mode, Argument Type: Boolean (default state is False)"
+        $12 -dm      "This argument is sets the Debug mode, Argument Type: Boolean (default state is False)"
 ```
 
 #### Usage
@@ -317,7 +368,8 @@ Script Input Arguments:
         $9  -dec      "This argument is used to provide the GitHub deploy excludes files commit, Argument type String" 
         #10 -rporg    "This argument is used to select the organization where the repo needs to be created. Users can provide the entire URL or just the organization name as the value of this argument., Argument Type: String"
         $11 -dmfd     "This argument is used to disable the mandatory files(LICENSE.txt, changelog.md and README.md) check required for deployment, Argument Type: Boolean (default state is False)"
-        $11  -dm      "his command sets the Debug mode, Argument Type: Boolean (default state is False)"
+        $12 -digt     "This argument is used to disable the when there is no tag argument and default push all tags to GitHub, Argument Type: Boolean (default state is False)
+        $13  -dm      "This command sets the Debug mode, Argument Type: Boolean (default state is False)"
 ```
 
 #### Usage
@@ -379,6 +431,7 @@ Script Input Arguments:
         $7  -rlua     "This argument is used to provide the GitHub upload artifact assets files, Argument Type: String ( comma separate, e.g. -u="archive.zip, support.doc" )"
         $8  -rle      "This argument is sets the GitHub edit a release, Argument Type: Boolean (default state is False)"
         $9  -rld      "This argument is sets the GitHub delete a release, Argument Type: Boolean (default state is False)"
+        $11 -rldec    "This argument is used to disable the release error check condition, Argument Type: Boolean (default state is False)"
         $10  -dm      "This argument is sets the Debug mode, Argument Type: Boolean (default state is False)"
 ```
 
@@ -414,17 +467,17 @@ Script Input Arguments:
     Bitbucket tag creation arguments:
 
     Mandatory:
-        $1 -bto,    "This argument is used to set the bitbucket tag operation, argument type Boolean (default state is False)"
-        $2 -bid,    "This argument is used to provide the bitbucket user id, argument type Boolean"
-        $3 -bpat,   "This argument is used to provide the bitbucket personal access token, argument type Boolean"
-        $4 -bpn,    "This argument is used to provide the bitbucket project name, argument type Boolean"
-        $5 -btv,    "This argument is used to provide the bitbucket tag name, argument type Boolean"
-        $6 -bch,    "This argument is used to provide the bitbucket commit hash, argument type Boolean"
-        $7 -rpn     "This argument is used to provide the GitHub repository name, Argument Type: String"
+        $1 -bto    "This argument is used to set the bitbucket tag operation, Argument type Boolean (default state is False)"
+        $2 -bid    "This argument is used to provide the bitbucket user id, Argument type Boolean"
+        $3 -bpat   "This argument is used to provide the bitbucket personal access token, Argument type Boolean"
+        $4 -bpn    "This argument is used to provide the bitbucket project name, Argument type Boolean"
+        $5 -btv    "This argument is used to provide the bitbucket tag name, Argument type Boolean"
+        $6 -bch    "This argument is used to provide the bitbucket commit hash, Argument type Boolean"
+        $7 -rpn    "This argument is used to provide the GitHub repository name, Argument Type: String"
         
     Optional:
-        $8 -btd,    "This argument is used to provide the bitbucket tag description, argument type Boolean"
-        $9 -dm      "This argument is sets the Debug mode, Argument Type: Boolean (default state is False)"
+        $8 -btd    "This argument is used to provide the bitbucket tag description, Argument type Boolean"
+        $9 -dm     "This argument is sets the Debug mode, Argument Type: Boolean (default state is False)"
 ```
 
 #### Usage
@@ -433,11 +486,47 @@ Script Input Arguments:
     $python tool-github-deploy.py -bto=true -bid=i15232 -bpat=bd48665409590b01bca48abc0cff18f06a198b63 -bpn=MCU16CE -rpn=pic24f-hello-world-uart -btv="v1.2.1" -bch=fd4e5b78e2a2bb677888d8fb9dd050e6392e250a
 ```
 
+#### Validate GitHub deployment operation
+Script Input Arguments: 
+```
+    Validate GitHub deployment operation arguments:
+
+    Mandatory:
+        $1 -vdo     "TThis argument is used to set the Validate GitHub deployment process operation, Argument type Boolean (default state is False)"
+        $2 -vmf     "This argument is used to provide the meta data file path, Argument type String"
+        $3 -vjsf    "This argument is used to provide the json schema file path, Argument type String"
+        $4 -vgrt    "This argument is used to provide the GitHub release tag version, Argument type String"
+        $5 -vgt     "This argument is used to provide the GitHub tag version, Argument type String"
+        
+    Optional:
+        $6 -dm     "This argument is sets the Debug mode, Argument Type: Boolean (default state is False)"
+```
+
+#### Usage
+- Validate Meta data json schema: (The User has to pass their own Json schema file to validate meta-data json file)
+```
+    $python tool-github-deploy.py -vdo=true gpat=bd48665409590b01bca48abc0cff18f06a198b63 -rporg=MchpTestArea -rpn=pic24f-hello-world-uart -vmf=.main-meta/main.json -vjsf=json/json_schema.json
+```
+
+- Check github release tag version is already exist in origin:
+```
+    $python tool-github-deploy.py -vdo=true gpat=bd48665409590b01bca48abc0cff18f06a198b63 -vgrt="2.0.0"
+```
+
+- Check github release tag version is already exist in origin:
+```
+    $python tool-github-deploy.py -vdo=true gpat=bd48665409590b01bca48abc0cff18f06a198b63 -vgt="2.0.0"
+```
+- Validate GitHub deployment operation (The User has to pass their own Json schema file to validate meta-data json file)
+```
+    $python tool-github-deploy.py -vdo=true gpat=bd48665409590b01bca48abc0cff18f06a198b63 -rporg=MchpTestArea -rpn=pic24f-hello-world-uart -vmf=.main-meta/main.json -vjsf=json/json_schema.json -vgrt="2.0.0" -vgt="2.0.0"
+```
+
 ### GitHub personal access token
 Creating a personal access token, Refer [personal-access-token](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line)
 Setup Jenkins job [personal-access-token](https://confluence.microchip.com/display/MSDTC/Setting+Up+Your+Build+Job+-+Part+1+-+Jenkins+Setup#SettingUpYourBuildJob-Part1-JenkinsSetup-DefiningtheJenkinsfile(Pipeline)location)
 
-**Note:** Bitbucket personal access token should have write access
+**Note:** Bitbucket personal access token should have write access</br>
 ![image](img/personal-access-token.png)
 
 ## Contributing
